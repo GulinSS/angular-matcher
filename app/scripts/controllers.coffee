@@ -34,52 +34,21 @@ angular.module('app.controllers', [])
       return ''
 ])
 
-.controller('MyCtrl1', [
+.controller('Matcher', [
   '$scope'
-
-($scope) ->
-  $scope.onePlusOne = 2
+  ($scope) ->
+    angular.extend $scope,
+      filters: [
+        field: "Body Type"
+        value: "Sedan"
+      ,
+        field: "Manufacturer"
+        value: "Mazda"
+      ,
+        field: "Model"
+        value: "6"
+      ,
+        field: "Year"
+        value: "2007"
+      ]
 ])
-
-.controller('MyCtrl2', [
-  '$scope'
-
-($scope) ->
-  $scope
-])
-
-.controller('TodoCtrl', [
-  '$scope'
-
-($scope) ->
-
-  $scope.todos = [
-    text: "learn angular"
-    done: true
-  ,
-    text: "build an angular app"
-    done: false
-  ]
-
-  $scope.addTodo = ->
-    $scope.todos.push
-      text: $scope.todoText
-      done: false
-
-    $scope.todoText = ""
-
-  $scope.remaining = ->
-    count = 0
-    angular.forEach $scope.todos, (todo) ->
-      count += (if todo.done then 0 else 1)
-
-    count
-
-  $scope.archive = ->
-    oldTodos = $scope.todos
-    $scope.todos = []
-    angular.forEach oldTodos, (todo) ->
-      $scope.todos.push todo  unless todo.done
-
-])
-

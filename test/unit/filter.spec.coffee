@@ -1,7 +1,7 @@
 'use strict'
 
 # jasmine specs for filters go here
-describe "filter", ->
+xdescribe "filter", ->
   beforeEach(module "app.filters")
 
   describe "interpolate", ->

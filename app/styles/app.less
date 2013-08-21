@@ -103,8 +103,9 @@
 @import "themes/custom/_overrides.less";
 
 .angular-matcher {
+  font-size: 0;
   display: inline-block;
-  height: @baseLineHeight;
+  // height: @baseLineHeight;
   padding: 4px 6px;
   margin-bottom: @baseLineHeight / 2;
   font-size: @baseFontSize;
@@ -134,27 +135,36 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    width: 10px;
+    width: 2px;
     .box-shadow(~"none");
   }
-}
 
-.input-prepend.input-append {
-  .angular-matcher {
-    position: relative; // placed here by default so that on :focus we can place the input above the .add-on for full border and box-shadow goodness
-    margin-bottom: 0; // prevent bottom margin from screwing up alignment in stacked forms
-    *margin-left: 0;
-    vertical-align: top;
-    .border-radius(0);
+  .match {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
 
-    // Make input on top when focused so blue border and shadow always show
-    &:hover {
-      z-index: 2;
+    .field {
+      &:after {
+        content: ":";
+      }
+    }
+
+    .close {
+      font-size: inherit;
+      line-height: inherit;
+      float: none;
+      padding-right: 2px;
+    }
+
+    .value {
+      margin-left: 4px;
+    }
+
+    .field:hover, .value:hover {
+      border-bottom: 1px solid #aaa;
     }
   }
-
-  .btn {
-    vertical-align: top;
-    .border-radius(0);
-  }
 }
+

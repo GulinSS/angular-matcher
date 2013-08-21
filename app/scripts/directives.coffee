@@ -8,11 +8,48 @@ angular.module('app.directives', [
   'app.services'
 ])
 
-.directive('appVersion', [
-  'version'
+.directive('angularMatcher', [
+  ->
+    controller: "Matcher"
+    restrict: "CA"
+    link: (scope, iElement, iAttrs, controller) ->
+      iElement.on "click", (e) ->
+        e.preventDefault()
+        e.stopPropagation()
 
-(version) ->
-
-  (scope, elm, attrs) ->
-    elm.text(version)
+        iElement.children("input").focus()
 ])
+
+.directive('angularMatcherFilter', [
+  ->
+    require: "^angularMatcher"
+    link: (scope, iElement, iAttrs, controller) ->
+      iElement.on "click", (e) ->
+        e.preventDefault()
+        e.stopPropagation()
+
+        angular.element("input", iElement).focus()
+])
+
+.directive('angularMatcherMatch', [
+  ->
+    require: "^angularMatcher"
+    link: (scope, iElement, iAttrs, controller) ->
+
+      angular.element(".field", iElement).on "click", (e) ->
+        e.preventDefault()
+        e.stopPropagation()
+
+      angular.element(".value", iElement).on "click", (e) ->
+        e.preventDefault()
+        e.stopPropagation()
+
+      angular.element(".close", iElement).on "click", (e) ->
+        e.preventDefault()
+        e.stopPropagation()
+
+        scope.$apply ->
+          neededToDelete = scope.filters.indexOf scope.filter
+          scope.filters.splice neededToDelete, 1
+])
+

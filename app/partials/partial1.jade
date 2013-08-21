@@ -1,14 +1,16 @@
 .sandbox
   form
-    .input-prepend.input-append
-      span.add-on
-        i.icon-search
-      .angular-matcher.input-xxlarge(placeholder="Start here")
+    .angular-matcher.input-xxlarge(placeholder="Start here")
+      span(ng-repeat='filter in filters', angular-matcher-filter)
         input(type="text")
-      button.btn(type="button")
-        i.icon-remove
+        .match(angular-matcher-match)
+          span.close
+            i.icon-remove
+          span.field {{ filter.field }}
+          span.value {{ filter.value }}
+      input(type="text")
 
-  ul.dropdown-menu(role="dropdown-menu", aria-labelledby="dropdownMenu")
+  ul.dropdown-menu
     li
       a(tabindex="-1", href="#") Body Type
       a(tabindex="-1", href="#") Manufacturer

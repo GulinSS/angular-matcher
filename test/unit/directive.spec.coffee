@@ -1,7 +1,7 @@
 'use strict'
 
 # jasmine specs for directives go here
-describe "directives", ->
+xdescribe "directives", ->
 
   beforeEach(module "app.directives")
 

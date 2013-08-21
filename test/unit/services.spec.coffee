@@ -2,7 +2,7 @@
 
 # jasmine specs for services go here
 
-describe "service", ->
+xdescribe "service", ->
 
   beforeEach(module "app.services")
 
