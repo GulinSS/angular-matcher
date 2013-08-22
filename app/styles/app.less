@@ -103,9 +103,7 @@
 @import "themes/custom/_overrides.less";
 
 .angular-matcher {
-  font-size: 0;
   display: inline-block;
-  // height: @baseLineHeight;
   padding: 4px 6px;
   margin-bottom: @baseLineHeight / 2;
   font-size: @baseFontSize;
@@ -129,13 +127,21 @@
 
   cursor: text;
 
+  #textWidthTester {
+    font-size: @baseFontSize;
+    line-height: @baseLineHeight;
+    position: absolute;
+    top: -1000px;
+    left: 0;
+    visibility: hidden;
+  }
+
   input[type="text"] {
     border: none;
     background: none;
     margin: 0;
     padding: 0;
     height: 100%;
-    width: 2px;
     .box-shadow(~"none");
   }
 
@@ -143,12 +149,11 @@
     display: inline-block;
     margin: 0;
     padding: 0;
-    cursor: pointer;
+    padding-left: 2px;
+    background-color: #f7f7f7;
 
-    .field {
-      &:after {
-        content: ":";
-      }
+    .close, .comma {
+      vertical-align: middle;
     }
 
     .close {
@@ -160,10 +165,6 @@
 
     .value {
       margin-left: 4px;
-    }
-
-    .field:hover, .value:hover {
-      border-bottom: 1px solid #aaa;
     }
   }
 }

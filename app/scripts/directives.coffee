@@ -53,3 +53,23 @@ angular.module('app.directives', [
           scope.filters.splice neededToDelete, 1
 ])
 
+.directive('inputTextDynamicWidth', [
+  "$document"
+  ($document) ->
+    require: "ngModel"
+    link: (scope, iElement, iAttrs) ->
+      checkSize = ->
+        tester = angular.element "<span id='textWidthTester'></span>"
+        angular.element("body", $document).append(tester)
+        tester.text(iElement.val())
+        width = tester.css("width").replace /[^-\d\.]/g, ''
+        width = parseInt(width) + 2
+        tester.remove()
+        iElement.css
+          width: "#{width}px"
+
+      checkSize()
+
+      scope.$watch iAttrs.ngModel, (v) ->
+        checkSize()
+])
