@@ -14,7 +14,9 @@ angular.module('app.viewModels', [])
       constructor: (@element) ->
 
       # Get element boundaries
+      # @return object constructed by Box
       getHelperPosition: ->
+
 
 
 ])

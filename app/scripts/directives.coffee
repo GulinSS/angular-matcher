@@ -8,6 +8,37 @@ angular.module('app.directives', [
   'app.services'
 ])
 
+.directive('autoInput', [
+  ->
+    restrict: "E"
+    scope:
+      result: "="
+      key: "&"
+      resolver: "&"
+
+    template: """
+<input type='text' ng-model='text' data-input-text-dynamic-width/>"""
+
+    replace: true
+
+    link: ($scope) ->
+      if $scope.result isnt undefined
+        $scope.text = $scope.result.text
+
+      $scope.$watch "text", (v) ->
+        return if v is undefined
+
+        e = ->
+          (@resolver())(@key, @text).then (vv) =>
+            @text = vv.text
+            @result = vv
+          , =>
+            @result = undefined
+            @text = ""
+
+        e.call $scope
+])
+
 .directive('angularMatcher', [
   ->
     controller: "Matcher"
@@ -23,12 +54,13 @@ angular.module('app.directives', [
 .directive('angularMatcherFilter', [
   ->
     require: "^angularMatcher"
-    link: (scope, iElement, iAttrs, controller) ->
-      iElement.on "click", (e) ->
-        e.preventDefault()
-        e.stopPropagation()
+    link: (scope, iElement) ->
+      scope.$watch "filters", (v, old) ->
+        return if v is undefined
+        return if old is undefined
+        return if v.length is old.length
 
-        angular.element("input", iElement).focus()
+        angular.element(".value:last-child", iElement).focus()
 ])
 
 .directive('angularMatcherMatch', [

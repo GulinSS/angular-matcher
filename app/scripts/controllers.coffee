@@ -36,19 +36,46 @@ angular.module('app.controllers', [])
 
 .controller('Matcher', [
   '$scope'
-  ($scope) ->
+  '$q'
+  ($scope, $q) ->
     angular.extend $scope,
       filters: [
-        field: "Body Type"
-        value: "Sedan"
-      ,
-        field: "Manufacturer"
-        value: "Mazda"
-      ,
-        field: "Model"
-        value: "6"
-      ,
-        field: "Year"
-        value: "2007"
+        key:
+          name: "Body Type"
+          parent: null
+          child: "Manufacturer"
+
+        result:
+          text: "Body Type"
+
+          key:
+            resultFor: "Body Type"
+
+          value:
+            id: 1
+            text: "Sedan"
       ]
+
+
+      #filters: [
+      #  field: "Body Type"
+      #  value: "Sedan"
+      #,
+      #  field: "Manufacturer"
+      #  value: "Mazda"
+      #,
+      #  field: "Model"
+      #  value: "6"
+      #,
+      #  field: "Year"
+      #  value: "2007"
+      #]
+
+      showList: (key, text) ->
+        deferred = $q.defer()
+
+        deferred.resolve
+          text: text
+
+        deferred.promise
 ])

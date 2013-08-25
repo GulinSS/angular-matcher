@@ -2,14 +2,13 @@
   form
     .angular-matcher.input-xxlarge(placeholder="Start here")
       span(ng-repeat='filter in filters', angular-matcher-filter)
-        input(input-text-dynamic-width, ng-model="filter.child", type="text")
         .match(angular-matcher-match)
           span.close
             i.icon-remove
-          input.field(input-text-dynamic-width, type="text", ng-model="filter.field")
+          auto-input.field(result="filter.result", key="filter.key", resolver="showList")
           span.comma :
-          input.value(input-text-dynamic-width, type="text", ng-model="filter.value")
-      input(input-text-dynamic-width, ng-model="child", type="text")
+          auto-input.value(result="filter.result.value", key="filter.result.key", resolver="showList")
+      auto-input(result="child", key="blank", resolver="showList")
 
   ul.dropdown-menu
     li

@@ -4,10 +4,8 @@
   "main": [],
   "dependencies": {
     "console-polyfill": "*",
-
     "bootstrap": "~2.3.2",
     "font-awesome": "~3.1.1",
-
     "angularjs-bower": "5baf5dd12749c5d9e1f0197aa8813f005ec34ebf"
   }
 }
