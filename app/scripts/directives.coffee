@@ -48,6 +48,7 @@ angular.module('app.directives', [
         e.preventDefault()
         e.stopPropagation()
 
+        # TODO: extract to viewModel
         iElement.children("input").focus()
 ])
 
@@ -60,6 +61,7 @@ angular.module('app.directives', [
         return if old is undefined
         return if v.length is old.length
 
+        # TODO: extract to viewModel
         angular.element(".value:last-child", iElement).focus()
 ])
 
@@ -81,6 +83,8 @@ angular.module('app.directives', [
         e.stopPropagation()
 
         scope.$apply ->
+
+          # TODO: extract to viewModel
           neededToDelete = scope.filters.indexOf scope.filter
           scope.filters.splice neededToDelete, 1
 ])

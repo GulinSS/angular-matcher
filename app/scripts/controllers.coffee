@@ -40,7 +40,7 @@ angular.module('app.controllers', [])
   ($scope, $q) ->
     angular.extend $scope,
       filters: [
-        key:
+        key: #TODO: class A
           name: "Body Type"
           parent: null
           child: "Manufacturer"
@@ -48,7 +48,7 @@ angular.module('app.controllers', [])
         result:
           text: "Body Type"
 
-          key:
+          key: #TODO: class B
             resultFor: "Body Type"
 
           value:
@@ -56,6 +56,10 @@ angular.module('app.controllers', [])
             text: "Sedan"
       ]
 
+      # TODO: list of available filter fields
+      fields: [
+
+      ]
 
       #filters: [
       #  field: "Body Type"
