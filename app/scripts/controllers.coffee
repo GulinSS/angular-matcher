@@ -75,6 +75,7 @@ angular.module('app.controllers', [])
       #  value: "2007"
       #]
 
+      # TODO: add coords to parameters
       showList: (key, text) ->
         deferred = $q.defer()
 
