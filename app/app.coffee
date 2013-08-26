@@ -8,6 +8,9 @@ App = angular.module('app', [
   'app.filters'
   'app.services'
   'app.templates'
+
+  'contextMenu'
+  'autoInput.directives' # TODO: 'autoInput'
 ])
 
 App.config([
