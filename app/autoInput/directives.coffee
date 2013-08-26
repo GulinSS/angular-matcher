@@ -15,11 +15,12 @@ angular.module("autoInput.directives", [])
         $scope.text = $scope.result.text
 
       $scope.$watch "text", (v, old) ->
-        return if v is undefined
+        return if v is ""
+        return if v is null
         return if v is old
 
         e = ->
-          (@resolver())(@key, @text).then (vv) =>
+          (@resolver())(@key(), @text).then (vv) =>
             @text = vv.text
             @result = vv
           , =>
