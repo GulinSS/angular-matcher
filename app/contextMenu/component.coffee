@@ -1,8 +1,7 @@
 angular.module("contextMenu", [
   "contextMenu.directives"
   "contextMenu.services"
-
-  # TODO: templates
+  "app.contextMenu.templates"
 ])
 .run [
   "$rootScope"

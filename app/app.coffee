@@ -10,7 +10,7 @@ App = angular.module('app', [
   'app.templates'
 
   'contextMenu'
-  'autoInput.directives' # TODO: 'autoInput'
+  'autoInput' # TODO: 'autoInput'
 ])
 
 App.config([
