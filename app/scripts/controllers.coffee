@@ -37,7 +37,8 @@ angular.module('app.controllers', [])
 .controller('Matcher', [
   '$scope'
   '$q'
-  ($scope, $q) ->
+  'contextMenu'
+  ($scope, $q, contextMenu) ->
     angular.extend $scope,
       filters: [
         key: #TODO: class A

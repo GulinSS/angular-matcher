@@ -14,8 +14,9 @@ angular.module("autoInput.directives", [])
       if $scope.result isnt undefined
         $scope.text = $scope.result.text
 
-      $scope.$watch "text", (v) ->
+      $scope.$watch "text", (v, old) ->
         return if v is undefined
+        return if v is old
 
         e = ->
           (@resolver())(@key, @text).then (vv) =>
@@ -28,7 +29,7 @@ angular.module("autoInput.directives", [])
         e.call $scope
 ])
 
-.directive('inputTextDynamicWidth', [
+.directive('dynamicWidth', [
   "$document"
   ($document) ->
     require: "ngModel"
