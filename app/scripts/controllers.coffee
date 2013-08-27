@@ -7,10 +7,8 @@ angular.module('app.controllers', [])
 .controller('AppCtrl', [
   '$scope'
   '$location'
-  '$resource'
   '$rootScope'
-
-($scope, $location, $resource, $rootScope) ->
+($scope, $location, $rootScope) ->
 
   # Uses the url to determine if the selected
   # menu item should have the class active.
@@ -48,7 +46,7 @@ angular.module('app.controllers', [])
 
     angular.extend $scope,
       filters: [
-        key: #TODO: class A
+        key:
           name: "Body Type"
           parent: null
           child: "Manufacturer"
@@ -56,7 +54,7 @@ angular.module('app.controllers', [])
         result:
           text: "Body Type"
 
-          key: #TODO: class B
+          key:
             resultFor: "Body Type"
 
           value:
