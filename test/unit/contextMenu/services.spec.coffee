@@ -6,62 +6,104 @@ describe "contextMenu", ->
       beforeEach module "contextMenu.services"
       beforeEach module "contextMenu.viewModels"
 
-      parameters =
-        x: 10
-        y: 20
-        elements: [
-          text: "Element 1"
-        ,
-          text: "Element 2"
-        ,
-          text: "Element 3"
-        ]
+      test = (asserts) ->
+        inject (contextMenu, $document, $rootScope) ->
+          parameters =
+            x: 10
+            y: 20
+            elements: [
+              text: "Element 1"
+            ,
+              text: "Element 2"
+            ,
+              text: "Element 3"
+            ]
+          result = contextMenu parameters
 
-      it "produces flyweight facade for activation dropdown-menu", inject (contextMenu) ->
-        expect(angular.isFunction(contextMenu)).toBeTruthy()
+          asserts.call
+            $apply: $rootScope.$apply
+            ctor: contextMenu
+            instance: result
+            parameters: parameters
+            $menu: ->
+              $(".dropdown-menu", $document.attr("body"))
 
-        result = contextMenu parameters
+
+      it "produces flyweight facade for activation dropdown-menu", test ->
+        expect(angular.isFunction(@ctor)).toBeTruthy()
 
         angular.forEach [
           'cancel'
           'take'
           'down'
           'up'
-        ], (v) ->
-          expect(result[v]).toBeDefined("#{v}")
-          expect(angular.isFunction(result[v])).toBeTruthy()
+        ], (v) =>
+          expect(@instance[v]).toBeDefined("#{v}")
+          expect(angular.isFunction(@instance[v])).toBeTruthy()
 
-        expect(result.promise).toBeDefined("promise")
-        expect(angular.isObject(result.promise)).toBeTruthy("promise is object")
-        expect(result.promise.then).toBeDefined("promise.then")
-        expect(angular.isFunction(result.promise.then)).toBeDefined("promise.then is method")
+        expect(@instance.promise).toBeDefined("promise")
+        expect(angular.isObject(@instance.promise)).toBeTruthy("promise is object")
+        expect(@instance.promise.then).toBeDefined("promise.then")
+        expect(angular.isFunction(@instance.promise.then)).toBeDefined("promise.then is method")
 
-      it "appends .dropdown-menu element to DOM's body", inject (contextMenu, $document) ->
-        contextMenu parameters
+      it "appends .dropdown-menu element to DOM's body", test ->
+        expect(@$menu().length).toBe 1
 
-        $menu = $(".dropdown-menu", $document.attr("body"))
+        expect(true).toBe false # TODO: test for x-y coords
 
-        expect($menu.length).toBe 1
-        expect($("li", $menu).length).toBe 3, "it must appends correct count of elements"
-
-
+        expect($("li", @$menu()).length).toBe @parameters.elements.length, "it must appends correct count of elements"
+        @parameters.elements.forEach (v, i) =>
+          expect($("a:eq(#{i})", @$menu()).val()).toBe v.text
 
       describe "Result object\n", ->
-        it "should disappear on cancel method and reject a promise", inject (contextMenu) ->
-          result = contextMenu parameters
-          result.cancel()
+        it "should disappear on cancel method and reject a promise", test ->
+          @instance.cancel()
 
-          expect($(".dropdown-menu").length).toBe 0
+          expect(@$menu().length).toBe 0
           expect(true).toBe false #TODO: test for promise rejection
 
-        it "should move .active class down at current position on down method", ->
-          expect(true).toBe false
-        it "should move .active class up at current position on up method", ->
-          expect(true).toBe false
-        it "should resolve promise on select method", ->
-          expect(true).toBe false
-        it "should resolve promise on click event of element", ->
-          expect(true).toBe false
+        it "should select first element on init", test ->
+          expect($("li.active:eq(0)", @$menu()).length).toBe 1
+
+        it "should move .active class down at current position on down method", test ->
+          $menu = @$menu()
+          @instance.down()
+          expect($("li.active:eq(1)", $menu).length).toBe 1
+
+          @instance.down()
+          expect($("li.active:eq(2)", $menu).length).toBe 1
+
+          expect($("li.active", $menu).length).toBe 1
+
+        it "should move .active class up at current position on up method", test ->
+          $menu = @$menu()
+          @instance.up()
+          expect($("li.active:eq(2)", $menu).length).toBe 1
+
+          @instance.up()
+          expect($("li.active:eq(1)", $menu).length).toBe 1
+
+          expect($("li.active", $menu).length).toBe 1
+
+        it "should resolve promise on take method and hide itself", test ->
+          resolve = jasmine.createSpy("on resolve")
+          @instance.promise.then resolve
+
+          @$apply =>
+            @instance.take()
+
+          expect(resolve.method.mostRecentCall.args[0].text).toBe @parameters.elements[0].text
+          expect(@$menu().length).toBe 0
+
+        it "should resolve promise on click event of element and hide itself", test ->
+          resolve = jasmine.createSpy("on resolve")
+          @instance.promise.then resolve
+
+          @$apply =>
+            $("li:eq(1) a", @$menu()).click()
+
+          expect(resolve.method.mostRecentCall.args[0].text).toBe @parameters.elements[1].text
+          expect(@$menu().length).toBe 0
 
       describe "Produced scope\n", ->
         it "should attach method take to scope, which takes first parameter and resolve promise with it", ->
