@@ -37,13 +37,6 @@ angular.module('app.controllers', [])
   '$q'
   'contextMenu'
   ($scope, $q, contextMenu) ->
-
-    contextMenu
-      elements: [
-        text: "1"
-      ]
-
-
     angular.extend $scope,
       filters: [
         key:
