@@ -2,15 +2,12 @@
 
 # Declare app level module which depends on filters, and services
 App = angular.module('app', [
-  'ngResource'
   'app.controllers'
   'app.directives'
-  'app.filters'
-  'app.services'
   'app.templates'
 
   'contextMenu'
-  'autoInput' # TODO: 'autoInput'
+  'autoInput'
 ])
 
 App.config([
