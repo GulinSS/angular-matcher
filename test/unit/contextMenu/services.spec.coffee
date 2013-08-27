@@ -44,6 +44,8 @@ describe "contextMenu", ->
         expect($menu.length).toBe 1
         expect($("li", $menu).length).toBe 3, "it must appends correct count of elements"
 
+
+
       describe "Result object\n", ->
         it "should disappear on cancel method and reject a promise", inject (contextMenu) ->
           result = contextMenu parameters
