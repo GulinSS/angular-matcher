@@ -106,7 +106,35 @@ describe "contextMenu", ->
           expect(@$menu().length).toBe 0
 
       describe "Produced scope\n", ->
-        it "should attach method take to scope, which takes first parameter and resolve promise with it", ->
-          expect(true).toBe false
+        it "should attach methods 'take' and 'select' to scope", test ->
+          scope = @$menu().scope()
+
+          expect(scope).toBeDefined()
+
+          [
+            "take"
+            "select"
+          ].forEach (v) ->
+            expect(angular.isFunction(scope[v])).toBeDefined()
+
+        it "should attach method take to scope, which takes first parameter and resolve promise with it", test ->
+          resolve = jasmine.createSpy("on resolve")
+          @instance.promise.then resolve
+          scope = @$menu().scope()
+
+          @$apply =>
+            scope.take scope.elements[0]
+
+          expect(resolve.method.mostRecentCall.args[0].text).toBe @parameters.elements[1].text
+          expect(@$menu().length).toBe 0
+
         it "should attach method select to scope, which takes first parameter and change field 'selected' of this parameter to true", ->
-          expect(true).toBe false
+          $menu = @$menu()
+          scope = $menu.scope()
+
+          @$apply =>
+            scope.select scope.elements[1]
+
+          expect($("li.active:eq(1)", $menu).length).toBe 1
+          expect($("li.active", $menu).length).toBe 1
+          expect(@$menu().length).toBe 1
