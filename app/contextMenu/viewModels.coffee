@@ -5,7 +5,7 @@ angular.module("contextMenu.viewModels", [])
       constructor: (dto) ->
         defaults =
           text: ""
-          selected: false
+          active: false
 
         angular.extend this, defaults, dto
 ])

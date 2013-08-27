@@ -18,4 +18,4 @@ describe "contextMenu", ->
 
       it "is a class and accepts dto as parameter", test ->
         expect(@instance.text).toBe "element 1"
-        expect(@instance.selected).toBe false
+        expect(@instance.active).toBeDefined()

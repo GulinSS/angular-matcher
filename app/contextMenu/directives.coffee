@@ -3,9 +3,11 @@ angular.module('contextMenu.directives', [])
   ->
     restrict: "E"
     replace: true
-    scope: true
     templateUrl: "app/contextMenu/menu.jade"
-    link: ($scope) ->
-
+    link: (scope) ->
+      angular.extend scope,
+        style:
+          top  : scope.y
+          left : scope.x
 ])
 

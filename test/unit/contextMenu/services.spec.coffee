@@ -3,8 +3,9 @@
 describe "contextMenu", ->
   describe "services", ->
     describe "contextMenu:\n", ->
-      beforeEach module "contextMenu.services"
-      beforeEach module "contextMenu.viewModels"
+      beforeEach module "contextMenu"
+      beforeEach ->
+        $(".dropdown-menu").remove()
 
       test = (asserts) ->
         inject (contextMenu, $document, $rootScope) ->
@@ -19,15 +20,15 @@ describe "contextMenu", ->
               text: "Element 3"
             ]
           result = contextMenu parameters
+          $rootScope.$apply()
 
           asserts.call
-            $apply: $rootScope.$apply
+            $apply: angular.bind $rootScope, $rootScope.$apply
             ctor: contextMenu
             instance: result
             parameters: parameters
             $menu: ->
               $(".dropdown-menu", $document.attr("body"))
-
 
       it "produces flyweight facade for activation dropdown-menu", test ->
         expect(angular.isFunction(@ctor)).toBeTruthy()
@@ -41,6 +42,7 @@ describe "contextMenu", ->
           expect(@instance[v]).toBeDefined("#{v}")
           expect(angular.isFunction(@instance[v])).toBeTruthy()
 
+        expect(@instance.scope).toBeDefined("scope")
         expect(@instance.promise).toBeDefined("promise")
         expect(angular.isObject(@instance.promise)).toBeTruthy("promise is object")
         expect(@instance.promise.then).toBeDefined("promise.then")
@@ -49,39 +51,57 @@ describe "contextMenu", ->
       it "appends .dropdown-menu element to DOM's body", test ->
         expect(@$menu().length).toBe 1
 
-        expect(true).toBe false # TODO: test for x-y coords
+        position = @$menu().position()
+
+        expect("#{position.left}px").toBe @instance.scope.x, "left position"
+        expect("#{position.top}px").toBe @instance.scope.y, "top position"
 
         expect($("li", @$menu()).length).toBe @parameters.elements.length, "it must appends correct count of elements"
         @parameters.elements.forEach (v, i) =>
-          expect($("a:eq(#{i})", @$menu()).val()).toBe v.text
+          expect($("a:eq(#{i})", @$menu()).text()).toBe v.text
 
       describe "Result object\n", ->
         it "should disappear on cancel method and reject a promise", test ->
-          @instance.cancel()
+          resolve = ->
+          reject = jasmine.createSpy("rejection")
+          @instance.promise.then resolve, reject
+
+          @$apply => @instance.cancel()
 
           expect(@$menu().length).toBe 0
-          expect(true).toBe false #TODO: test for promise rejection
+          expect(reject).toHaveBeenCalled()
 
         it "should select first element on init", test ->
           expect($("li.active:eq(0)", @$menu()).length).toBe 1
 
         it "should move .active class down at current position on down method", test ->
           $menu = @$menu()
-          @instance.down()
-          expect($("li.active:eq(1)", $menu).length).toBe 1
 
-          @instance.down()
-          expect($("li.active:eq(2)", $menu).length).toBe 1
+          @$apply => @instance.down()
+          expect($("li:eq(1)", $menu).hasClass("active")).toBeTruthy 'li.active:eq(1)'
+
+          @$apply => @instance.down()
+          expect($("li:eq(2)", $menu).hasClass("active")).toBeTruthy 'li.active:eq(2)'
+
+          @$apply => @instance.down()
+          expect($("li:eq(0)", $menu).hasClass("active")).toBeTruthy 'li.active:eq(0)'
 
           expect($("li.active", $menu).length).toBe 1
 
         it "should move .active class up at current position on up method", test ->
           $menu = @$menu()
-          @instance.up()
-          expect($("li.active:eq(2)", $menu).length).toBe 1
 
-          @instance.up()
-          expect($("li.active:eq(1)", $menu).length).toBe 1
+          @$apply => @instance.up()
+          expect($("li:eq(2)", $menu).hasClass("active")).toBeTruthy 'li.active:eq(2)'
+
+          @$apply => @instance.up()
+          expect($("li:eq(1)", $menu).hasClass("active")).toBeTruthy 'li.active:eq(1)'
+
+          @$apply => @instance.up()
+          expect($("li:eq(0)", $menu).hasClass("active")).toBeTruthy 'li.active:eq(0)'
+
+          @$apply => @instance.up()
+          expect($("li:eq(2)", $menu).hasClass("active")).toBeTruthy 'li.active:eq(2)'
 
           expect($("li.active", $menu).length).toBe 1
 
@@ -92,49 +112,39 @@ describe "contextMenu", ->
           @$apply =>
             @instance.take()
 
-          expect(resolve.method.mostRecentCall.args[0].text).toBe @parameters.elements[0].text
+          expect(resolve.mostRecentCall.args[0].text).toBe @parameters.elements[0].text
           expect(@$menu().length).toBe 0
 
         it "should resolve promise on click event of element and hide itself", test ->
           resolve = jasmine.createSpy("on resolve")
           @instance.promise.then resolve
 
-          @$apply =>
-            $("li:eq(1) a", @$menu()).click()
+          $("li:eq(1) a", @$menu()).click()
 
-          expect(resolve.method.mostRecentCall.args[0].text).toBe @parameters.elements[1].text
+          expect(resolve.mostRecentCall.args[0].text).toBe @parameters.elements[1].text
           expect(@$menu().length).toBe 0
 
       describe "Produced scope\n", ->
         it "should attach methods 'take' and 'select' to scope", test ->
-          scope = @$menu().scope()
-
-          expect(scope).toBeDefined()
-
-          [
-            "take"
-            "select"
-          ].forEach (v) ->
-            expect(angular.isFunction(scope[v])).toBeDefined()
+          expect(angular.isFunction(@instance.scope.take)).toBeDefined('take')
+          expect(angular.isFunction(@instance.scope.select)).toBeDefined('select')
 
         it "should attach method take to scope, which takes first parameter and resolve promise with it", test ->
           resolve = jasmine.createSpy("on resolve")
           @instance.promise.then resolve
-          scope = @$menu().scope()
 
           @$apply =>
-            scope.take scope.elements[0]
+            @instance.scope.take @instance.scope.elements[0]
 
-          expect(resolve.method.mostRecentCall.args[0].text).toBe @parameters.elements[1].text
+          expect(resolve.mostRecentCall.args[0].text).toBe @parameters.elements[0].text
           expect(@$menu().length).toBe 0
 
-        it "should attach method select to scope, which takes first parameter and change field 'selected' of this parameter to true", ->
+        it "should attach method select to scope, which takes first parameter and change field 'selected' of this parameter to true", test ->
           $menu = @$menu()
-          scope = $menu.scope()
 
           @$apply =>
-            scope.select scope.elements[1]
+            @instance.scope.select @instance.scope.elements[1]
 
-          expect($("li.active:eq(1)", $menu).length).toBe 1
-          expect($("li.active", $menu).length).toBe 1
+          expect($("li:eq(1)", $menu).hasClass("active")).toBeTruthy("li:eq(1)")
+          expect($("li.active", $menu).length).toBe 1, "li.active"
           expect(@$menu().length).toBe 1

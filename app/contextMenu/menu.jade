@@ -1,3 +1,3 @@
-ul.dropdown-menu
-  li(ng-repeat="element in elements", ng-class="{active: element.active}")
-    a(tabindex="-1", href="#", ng-click="element.action()") {{ element.text }}
+ul.dropdown-menu.contextMenu(style="display: block; position: absolute", ng-style="style")
+  li(ng-repeat="element in elements", ng-class="{active: element.active}", ng-mouseenter="select(element)")
+    a(tabindex="-1", href="#", ng-click="take(element)") {{ element.text }}
