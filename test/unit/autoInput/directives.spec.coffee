@@ -3,7 +3,7 @@
 describe "autoInput", ->
   describe "directives:", ->
 
-    beforeEach module "autoInput"
+    beforeEach module 'autoInput'
 
     describe "dynamicWidth\n", ->
       test = (asserts) ->
@@ -32,11 +32,16 @@ describe "autoInput", ->
         expect(@element.width() is width_aa).toBe true
 
     describe "autoInput\n", ->
-      valueMock =
-        text: "mock"
+      valueStub = [
+        text: "value 1"
+      ,
+        text: "value 2"
+      ,
+        text: "value 3"
+      ]
 
       promiseMock =
-        then: (f) -> f valueMock
+        then: (f) -> f valueStub
 
       test = (asserts) ->
         inject ($compile, $rootScope) ->
@@ -46,10 +51,10 @@ describe "autoInput", ->
               text: "abc"
             key:
               prop1: "value1"
-            resolver: jasmine.createSpy("resolver").andReturn promiseMock
+            suggestions: jasmine.createSpy("suggestions").andReturn promiseMock
 
 
-          element = $compile("<auto-input result='result' key='key' resolver='resolver'/>")(scope)
+          element = $compile("<auto-input result='result' key='key' suggestions='suggestions'/>")(scope)
           scope.$apply()
           asserts.call
             element: element
@@ -58,28 +63,41 @@ describe "autoInput", ->
       it "sets input value from result attribute if it is available", ->
         test ->
           expect(@element.val()).toBe @scope.result.text
-          expect(@scope.resolver).not.toHaveBeenCalled()
+          expect(@scope.suggestions).not.toHaveBeenCalled()
 
       it "does nothing on empty text in input", ->
         test ->
           @element.val ""
           @element.trigger "input"
 
-          expect(@scope.resolver).not.toHaveBeenCalled()
+          expect(@scope.suggestions).not.toHaveBeenCalled()
 
       it "does nothing on equal text in input", ->
         test ->
           @element.val @scope.result.text
           @element.trigger "input"
 
-          expect(@scope.resolver).not.toHaveBeenCalled()
+          expect(@scope.suggestions).not.toHaveBeenCalled()
 
-      it "execute resolver on change input text and treats its value as result", ->
+      describe "suggestions workflow\n", ->
+
+        it "executes request for suggestions on change input text and shows contextMenu", test ->
+          value = "lorem ipsum"
+          @element.val value
+          @element.trigger "input"
+
+          expect(@scope.suggestions).toHaveBeenCalledWith(@scope.key, value)
+
+          $menu = $(".dropdown-menu")
+          valueStub.forEach (v, i) ->
+            expect($("li:eq(#{i}) a", $menu).text()).toBe v.text, "li:eq(#{i}) a"
+
+      xit "execute resolver on change input text and treats its value as result", ->
         test ->
           value = "lorem ipsum"
           @element.val value
           @element.trigger "input"
 
           expect(@scope.resolver).toHaveBeenCalledWith(@scope.key, value)
-          expect(@scope.result).toBe valueMock
-          expect(@element.val()).toBe valueMock.text
+          expect(@scope.result).toBe valueStub
+          expect(@element.val()).toBe valueStub.text

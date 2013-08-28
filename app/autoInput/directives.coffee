@@ -1,18 +1,46 @@
 angular.module("autoInput.directives", [])
 .directive('autoInput', [
-  ->
+  "contextMenu"
+  "keyCodes"
+  (contextMenu, keyCodes) ->
     restrict: "E"
     scope:
       result: "="
       key: "&"
-      resolver: "&"
+      suggestions: "&"
 
     templateUrl: "app/autoInput/input.jade"
     replace: true
 
-    link: ($scope) ->
+    link: ($scope, $element) ->
+      menu = undefined
+
       if $scope.result isnt undefined
         $scope.text = $scope.result.text
+
+      $element.keydown (e) ->
+        return true if menu is undefined
+        switch e.keyCode
+          when keyCodes.upArrow   then menu.up()
+          when keyCodes.downArrow then menu.down()
+          when keyCodes.enter      then menu.take()
+          when keyCodes.escape     then menu.cancel()
+          else return true
+
+        e.stopPropagation()
+        e.preventDefault()
+
+      buildContextMenu = (elements) =>
+        menu = contextMenu
+          x: $element.offset().left
+          y: $element.offset().top + $element.height()
+          elements: elements
+
+        menu.promise.then (vv) =>
+          $scope.text = vv.text
+          $scope.result = elements
+        , =>
+          $scope.result = undefined
 
       $scope.$watch "text", (v, old) ->
         return if v is ""
@@ -20,12 +48,9 @@ angular.module("autoInput.directives", [])
         return if v is old
 
         e = ->
-          (@resolver())(@key(), @text).then (vv) =>
-            @text = vv.text
-            @result = vv
-          , =>
-            @result = undefined
-            @text = ""
+          (@suggestions())(@key(), @text)
+            .then buildContextMenu
+            , -> menu?.cancel()
 
         e.call $scope
 ])

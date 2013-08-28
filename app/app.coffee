@@ -6,7 +6,6 @@ App = angular.module('app', [
   'app.directives'
   'app.templates'
 
-  'contextMenu'
   'autoInput'
 ])
 

@@ -76,10 +76,11 @@ angular.module('app.controllers', [])
 
       # TODO: add coords to parameters
       showList: (key, text) ->
-        deferred = $q.defer()
-
-        deferred.resolve
-          text: text
-
-        deferred.promise
+        $q.when [
+          text: "#{text} 1"
+        ,
+          text: "#{text} 2"
+        ,
+          text: "#{text} 3"
+        ]
 ])
