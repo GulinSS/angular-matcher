@@ -18,17 +18,13 @@ angular.module("autoInput.directives", [])
       if $scope.result isnt undefined
         $scope.text = $scope.result.text
 
-      $element.keydown (e) ->
-        return true if menu is undefined
-        switch e.keyCode
-          when keyCodes.upArrow   then menu.up()
-          when keyCodes.downArrow then menu.down()
-          when keyCodes.enter      then menu.take()
-          when keyCodes.escape     then menu.cancel()
-          else return true
+      triggerMenu = ->
+        e = ->
+          (@suggestions())(@key(), @text)
+            .then buildContextMenu
+            , -> menu?.cancel()
 
-        e.stopPropagation()
-        e.preventDefault()
+        e.call $scope
 
       buildContextMenu = (elements) =>
         menu = contextMenu
@@ -37,22 +33,38 @@ angular.module("autoInput.directives", [])
           elements: elements
 
         menu.promise.then (vv) =>
-          $scope.text = vv.text
+          interruptWatch ->
+            $scope.text = vv.text
+
           $scope.result = elements
         , =>
           $scope.result = undefined
 
-      $scope.$watch "text", (v, old) ->
+      interruptWatch = (f) ->
+        textWatchCancel()
+        f()
+        textWatchCancel = $scope.$watch "text", textWatch
+
+      textWatchCancel = $scope.$watch "text", textWatch
+
+      textWatch = (v, old) ->
         return if v is ""
         return if v is null
         return if v is old
 
-        e = ->
-          (@suggestions())(@key(), @text)
-            .then buildContextMenu
-            , -> menu?.cancel()
+        triggerMenu()
 
-        e.call $scope
+      $element.keydown (e) ->
+        return true if menu is undefined
+        switch e.keyCode
+          when keyCodes.upArrow   then $scope.$apply -> menu.up()
+          when keyCodes.downArrow then $scope.$apply -> menu.down()
+          when keyCodes.enter      then $scope.$apply -> menu.take()
+          when keyCodes.escape     then $scope.$apply -> menu.cancel()
+          else return true
+
+        e.stopPropagation()
+        e.preventDefault()
 ])
 
 .directive('dynamicWidth', [
