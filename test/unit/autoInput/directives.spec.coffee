@@ -3,7 +3,7 @@
 describe "autoInput", ->
   describe "directives:", ->
 
-    beforeEach module 'autoInput'
+    beforeEach module 'autoInput.directives'
 
     describe "dynamicWidth\n", ->
       test = (asserts) ->
@@ -32,6 +32,22 @@ describe "autoInput", ->
         expect(@element.width() is width_aa).toBe true
 
     describe "autoInput\n", ->
+      beforeEach module 'autoInput.constants'
+      beforeEach module 'app.autoInput.templates'
+
+      contextMenuSpyResult =
+        promise:
+          then: jasmine.createSpy "contextMenu:promise.then"
+        cancel: jasmine.createSpy "contextMenu:cancel"
+        down: jasmine.createSpy "contextMenu:down"
+        take: jasmine.createSpy "contextMenu:take"
+        up: jasmine.createSpy "contextMenu:up"
+
+      contextMenuSpy = jasmine.createSpy("contextMenu").andReturn contextMenuSpyResult
+      beforeEach module ($provide) ->
+        $provide.value "contextMenu", contextMenuSpy
+        return
+
       valueStub = [
         text: "value 1"
       ,
@@ -44,7 +60,7 @@ describe "autoInput", ->
         then: (f) -> f valueStub
 
       test = (asserts) ->
-        inject ($compile, $rootScope) ->
+        inject ($compile, $rootScope, keyCodes) ->
           scope = $rootScope.$new()
           angular.extend scope,
             result:
@@ -57,6 +73,7 @@ describe "autoInput", ->
           element = $compile("<auto-input result='result' key='key' suggestions='suggestions'/>")(scope)
           scope.$apply()
           asserts.call
+            keyCodes: keyCodes
             element: element
             scope: scope
 
@@ -80,24 +97,53 @@ describe "autoInput", ->
           expect(@scope.suggestions).not.toHaveBeenCalled()
 
       describe "suggestions workflow\n", ->
+        value = "lorem ipsum"
 
-        it "executes request for suggestions on change input text and shows contextMenu", test ->
-          value = "lorem ipsum"
-          @element.val value
-          @element.trigger "input"
+        # Used for force initialization menu
+        testInner = (asserts) ->
+          test ->
+            @element.val value
+            @element.trigger "input"
 
+            asserts.call this
+
+        it "executes request for suggestions on change input text and shows contextMenu", testInner ->
+          ['x', 'y', 'elements'].forEach (v) ->
+            expect(contextMenuSpy.mostRecentCall.args[0][v]).toBeDefined()
           expect(@scope.suggestions).toHaveBeenCalledWith(@scope.key, value)
+          expect(contextMenuSpy.mostRecentCall.args[0].elements).toBe valueStub
+          expect(contextMenuSpy.mostRecentCall.args.length).toBe 1
 
-          $menu = $(".dropdown-menu")
-          valueStub.forEach (v, i) ->
-            expect($("li:eq(#{i}) a", $menu).text()).toBe v.text, "li:eq(#{i}) a"
+        it "should treats selected value in contextMenu as result", testInner ->
+          @scope.$apply ->
+            contextMenuSpyResult.promise.then.mostRecentCall.args[0](valueStub[0])
 
-      xit "execute resolver on change input text and treats its value as result", ->
-        test ->
-          value = "lorem ipsum"
-          @element.val value
-          @element.trigger "input"
+          expect(@element.val()).toBe valueStub[0].text
+          expect(@scope.result).toBe valueStub[0]
 
-          expect(@scope.resolver).toHaveBeenCalledWith(@scope.key, value)
-          expect(@scope.result).toBe valueStub
-          expect(@element.val()).toBe valueStub.text
+        it "should change value of result to undefined on rejection of contextMenu", testInner ->
+          @scope.$apply ->
+            contextMenuSpyResult.promise.then.mostRecentCall.args[1]()
+
+          expect(@scope.result).toBe undefined
+
+        describe "for keyboard events", ->
+          it "should execute down method of contextMenu on down arrow keydown", testInner ->
+            @element.simulate "keydown", keyCode: @keyCodes.downArrow
+
+            expect(contextMenuSpyResult.down).toHaveBeenCalled()
+
+          it "should execute up method of contextMenu on up arrow keydown", testInner ->
+            @element.simulate "keydown", keyCode: @keyCodes.upArrow
+
+            expect(contextMenuSpyResult.up).toHaveBeenCalled()
+
+          it "should execute cancel method of contextMenu on escape keydown", testInner ->
+            @element.simulate "keydown", keyCode: @keyCodes.escape
+
+            expect(contextMenuSpyResult.cancel).toHaveBeenCalled()
+
+          it "should execute take method of contextMenu on enter keydown", testInner ->
+            @element.simulate "keydown", keyCode: @keyCodes.enter
+
+            expect(contextMenuSpyResult.take).toHaveBeenCalled()

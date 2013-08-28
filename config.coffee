@@ -51,6 +51,7 @@ exports.config =
           'vendor/angularjs-bower/angular-sanitize.js'
           'vendor/angularjs-bower/angular-mocks.js'
         ]
+        "jquery-simulate": []
         "styles": []
       asserts:
         "img" : /bootstrap(\\|\/)img/

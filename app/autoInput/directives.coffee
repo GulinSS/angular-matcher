@@ -24,11 +24,11 @@ angular.module("autoInput.directives", [])
           y: $element.offset().top + $element.height()
           elements: elements
 
+
         menu.promise.then (vv) =>
           interruptWatch ->
             $scope.text = vv.text
-
-          $scope.result = elements
+          $scope.result = vv
         , =>
           $scope.result = undefined
 

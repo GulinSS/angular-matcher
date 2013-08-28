@@ -5,6 +5,8 @@ module.exports = function(config) {
       '_public/js/vendor.js',
       '_public/js/*.js',
 
+      'vendor/jquery-simulate/jquery.simulate.js',
+
       // Specs
       // 'test/tools/*.coffee',
       // 'test/jquery.simulate.js',
