@@ -13,7 +13,10 @@ angular.module('app.directives', [])
       iElement.on "click", (e) ->
         e.preventDefault()
         e.stopPropagation()
-        iElement.children("input").focus()
+        iElement.find(".last").focus()
+
+      scope.$on "Matcher:focus", ->
+        iElement.find(".last").focus()
 
       scope.$watch "filters", (v, old) ->
         return if v is undefined
@@ -27,12 +30,12 @@ angular.module('app.directives', [])
     require: "^angularMatcher"
     templateUrl: "app/partials/angular-matcher-match.jade"
     link: (scope, iElement, iAttrs, controller) ->
+      scope.$watch "filter.result", ->
+        iElement.find(".value").focus()
+
+      scope.$watch "filter.result.value", ->
+        scope.$emit "Matcher:focus"
 
       $(".field, .value", iElement).on "click", (e) ->
-        e.preventDefault()
         e.stopPropagation()
-
-      scope.remove = ->
-        neededToDelete = scope.filters.indexOf scope.filter
-        scope.filters.splice neededToDelete, 1
 ])

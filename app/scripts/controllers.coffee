@@ -35,9 +35,13 @@ angular.module('app.controllers', [])
 .controller('Matcher', [
   '$scope'
   '$q'
-  'contextMenu'
-  ($scope, $q, contextMenu) ->
+  ($scope, $q) ->
+
     angular.extend $scope,
+      remove: (element) ->
+        neededToDelete = $scope.filters.indexOf element
+        $scope.filters.splice neededToDelete, 1
+
       filters: [
         key:
           name: "Body Type"
@@ -74,7 +78,6 @@ angular.module('app.controllers', [])
       #  value: "2007"
       #]
 
-      # TODO: add coords to parameters
       showList: (key, text) ->
         $q.when [
           text: "#{text} 1"
