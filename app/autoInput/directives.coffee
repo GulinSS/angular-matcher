@@ -18,14 +18,6 @@ angular.module("autoInput.directives", [])
       if $scope.result isnt undefined
         $scope.text = $scope.result.text
 
-      triggerMenu = ->
-        e = ->
-          (@suggestions())(@key(), @text)
-            .then buildContextMenu
-            , -> menu?.cancel()
-
-        e.call $scope
-
       buildContextMenu = (elements) =>
         menu = contextMenu
           x: $element.offset().left
@@ -40,12 +32,13 @@ angular.module("autoInput.directives", [])
         , =>
           $scope.result = undefined
 
-      interruptWatch = (f) ->
-        textWatchCancel()
-        f()
-        textWatchCancel = $scope.$watch "text", textWatch
+      triggerMenu = ->
+        e = ->
+          (@suggestions())(@key(), @text)
+            .then buildContextMenu
+            , -> menu?.cancel()
 
-      textWatchCancel = $scope.$watch "text", textWatch
+        e.call $scope
 
       textWatch = (v, old) ->
         return if v is ""
@@ -53,6 +46,13 @@ angular.module("autoInput.directives", [])
         return if v is old
 
         triggerMenu()
+
+      textWatchCancel = $scope.$watch "text", textWatch
+
+      interruptWatch = (f) ->
+        textWatchCancel()
+        f()
+        textWatchCancel = $scope.$watch "text", textWatch
 
       $element.keydown (e) ->
         return true if menu is undefined
