@@ -27,14 +27,17 @@ angular.module('app.directives', [])
 
 .directive('angularMatcherMatch', [
   ->
-    require: "^angularMatcher"
     templateUrl: "app/partials/angular-matcher-match.jade"
-    link: (scope, iElement, iAttrs, controller) ->
-      scope.$watch "filter.result", ->
-        iElement.find(".value").focus()
+    link: (scope, iElement) ->
 
-      scope.$watch "filter.result.value", ->
-        scope.$emit "Matcher:focus"
+      #TODO: do it at more general level
+      #TODO: may be via autoInputController
+
+      #scope.$watch "filter.result", ->
+      #  iElement.find(".value").focus()
+
+      #scope.$watch "filter.result.value", ->
+      #  scope.$emit "Matcher:focus"
 
       $(".field, .value", iElement).on "click", (e) ->
         e.stopPropagation()
