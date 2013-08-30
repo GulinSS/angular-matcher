@@ -9,6 +9,13 @@ angular.module("autoInput.directives", [])
       key: "&"
       suggestions: "&"
 
+    #controller: it must solve such tasks:
+    # 1. on taking result execute jump focus to next autoInput
+    # 2. on moving cursor to the left of left border
+    #    execute jump focus to previous autoInput
+    # 3. on moving cursor to the right of last symbol in input
+    #    execute jump focus to next autoInput
+
     templateUrl: "app/autoInput/input.jade"
     replace: true
 
@@ -86,4 +93,11 @@ angular.module("autoInput.directives", [])
 
       scope.$watch iAttrs.ngModel, (v) ->
         checkSize()
+])
+
+.directive('clickStopPropagation', [
+  ->
+    link: (scope, iElement) ->
+      $(iElement).on "click", (e) ->
+        e.stopPropagation()
 ])

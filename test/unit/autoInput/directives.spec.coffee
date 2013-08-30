@@ -96,6 +96,9 @@ describe "autoInput", ->
 
           expect(@scope.suggestions).not.toHaveBeenCalled()
 
+      xit "disables propogation of click events to parent DOM elements", ->
+        expect(true).toBe false
+
       describe "suggestions workflow\n", ->
         value = "lorem ipsum"
 

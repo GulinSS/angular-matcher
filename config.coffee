@@ -23,7 +23,6 @@ exports.config =
           'vendor/jquery/jquery.js'
           'vendor/angularjs-bower/angular.js'                  
           'vendor/bootstrap/docs/assets/js/bootstrap.js'
-          'vendor/Rangy-bower/rangy-core.js'
         ]
 
     stylesheets:
