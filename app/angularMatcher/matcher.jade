@@ -1,8 +1,8 @@
-.angular-matcher.input-xxlarge
-  span.match(ng-repeat='filter in filters')
-    span.close(ng-click="remove(filter)")
+.angular-matcher
+  span.match(ng-repeat='match in matches')
+    span.close(ng-click="remove(match)")
       i.icon-remove
-    auto-input.field(result="filter", key="blank", suggestions="showList")
+    auto-input.field(result="match", key="blank", suggestions="suggestions")
     span.comma :
-    auto-input.value(result="filter.value", key="filter", suggestions="showList")
-  auto-input.last(result="child", key="blank", suggestions="showList")
+    auto-input.value(result="match.value", key="match", suggestions="suggestions")
+  auto-input.last(result="child", key="blank", suggestions="suggestions")

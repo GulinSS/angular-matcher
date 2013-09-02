@@ -12,6 +12,6 @@ describe "angularMatcher.directives", ->
       it "set focus to last .value element on changing collection of filters"
 
       describe "parameters in the scope", ->
-        it "expects 'result' field as result of user interaction", ->
+        it "expects 'matches' field as result of user interaction", ->
           expect(true).toBe false
 

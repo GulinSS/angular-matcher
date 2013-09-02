@@ -34,9 +34,27 @@ angular.module('app.controllers', [])
 
 .controller('Sandbox', [
   '$scope'
-  ($scope) ->
+  '$q'
+  ($scope, $q) ->
 
+    angular.extend $scope,
+      filters: [
+        text: "Body Type"
+        value:
+          text: "Sedan"
+      ,
+        text: "Manufacturer"
+        value:
+          text: "Mazda"
+      ]
 
-
+      suggestions: (key, text) ->
+        $q.when [
+          text: "#{text} 1"
+        ,
+          text: "#{text} 2"
+        ,
+          text: "#{text} 3"
+        ]
 ])
 

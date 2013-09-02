@@ -3,6 +3,9 @@ angular.module('angularMatcher.directives', [])
   ->
     controller: "Matcher"
     replace: true
+    scope:
+      matches: "="
+      suggestions: "&"
     restrict: "E"
     templateUrl: 'app/angularMatcher/matcher.jade'
     link: (scope, iElement, iAttrs, controller) ->
@@ -10,9 +13,4 @@ angular.module('angularMatcher.directives', [])
         e.preventDefault()
         e.stopPropagation()
         iElement.find(".last").focus()
-
-      scope.$watchCollection "filters", (v, old) ->
-        return if v is undefined
-        return if old is undefined
-        $(".value:last-child", iElement).focus()
 ])

@@ -1,51 +1,26 @@
 angular.module('angularMatcher.controllers', [])
 .controller('Matcher', [
   '$scope'
-  '$q'
-  ($scope, $q) ->
-
+  '$element'
+  ($scope, $element) ->
     $scope.$watch "child", (v) ->
       if v isnt undefined
-        $scope.filters.push v
+        watch = $scope.$watchCollection "matches", ->
+          #TODO solve this hack
+          setTimeout ->
+            $(".value:last-child", $element).focus()
+          , 0
+          watch()
+        $scope.matches.push v
 
       $scope.child = undefined
 
-    angular.extend $scope,
-      remove: (element) ->
-        neededToDelete = $scope.filters.indexOf element
-        $scope.filters.splice neededToDelete, 1
+    # Strange Angular behavior with passing argument to scope
+    $scope.suggestions = $scope.suggestions()
 
-      filters: [
-        text: "Body Type"
-        value:
-          text: "Sedan"
-      ,
-        text: "Manufacturer"
-        value:
-          text: "Mazda"
-      ]
+    $scope.remove = (element) ->
+      neededToDelete = $scope.matches.indexOf element
+      $scope.matches.splice neededToDelete, 1
 
 
-    #filters: [
-    #  field: "Body Type"
-    #  value: "Sedan"
-    #,
-    #  field: "Manufacturer"
-    #  value: "Mazda"
-    #,
-    #  field: "Model"
-    #  value: "6"
-    #,
-    #  field: "Year"
-    #  value: "2007"
-    #]
-
-      showList: (key, text) ->
-        $q.when [
-          text: "#{text} 1"
-        ,
-          text: "#{text} 2"
-        ,
-          text: "#{text} 3"
-        ]
 ])
