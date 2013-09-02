@@ -32,3 +32,9 @@ angular.module('app.controllers', [])
       return ''
 ])
 
+.controller('Sandbox', [
+  '$scope'
+  ($scope) ->
+
+])
+

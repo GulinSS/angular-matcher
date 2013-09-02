@@ -16,10 +16,13 @@ App.config([
 
   $routeProvider
 
-    .when('/view1', {templateUrl: 'app/partials/partial1.jade'})
+    .when('/sandbox', {
+      templateUrl: 'app/partials/sandbox.jade'
+      controller: 'Sandbox'
+    })
 
     # Catch all
-    .otherwise({redirectTo: '/view1'})
+    .otherwise({redirectTo: '/sandbox'})
 
   # Without server side support html5 must be disabled.
   $locationProvider.html5Mode(false)
