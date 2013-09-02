@@ -5,6 +5,10 @@ describe "autoInput", ->
 
     beforeEach module 'autoInput.directives'
 
+    describe "clickStopPropagation", ->
+      xit "disables propogation of click events to parent DOM elements", ->
+        expect(true).toBe false
+
     describe "dynamicWidth\n", ->
       test = (asserts) ->
         inject ($compile, $rootScope) ->
@@ -96,7 +100,7 @@ describe "autoInput", ->
 
           expect(@scope.suggestions).not.toHaveBeenCalled()
 
-      xit "disables propogation of click events to parent DOM elements", ->
+      xit "if result becomes undefined it clear text in input", ->
         expect(true).toBe false
 
       describe "suggestions workflow\n", ->

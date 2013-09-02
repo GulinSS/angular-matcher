@@ -4,6 +4,12 @@ angular.module('angularMatcher.controllers', [])
   '$q'
   ($scope, $q) ->
 
+    $scope.$watch "child", (v) ->
+      if v isnt undefined
+        $scope.filters.push v
+
+      $scope.child = undefined
+
     angular.extend $scope,
       remove: (element) ->
         neededToDelete = $scope.filters.indexOf element
@@ -19,10 +25,6 @@ angular.module('angularMatcher.controllers', [])
           text: "Mazda"
       ]
 
-      # TODO: list of available filter fields
-      fields: [
-
-      ]
 
     #filters: [
     #  field: "Body Type"

@@ -27,6 +27,10 @@ angular.module("autoInput.directives", [])
       if $scope.result isnt undefined
         $scope.text = $scope.result.text
 
+      $scope.$watch "result", (v) ->
+        if v is undefined
+          $scope.text = ""
+
       buildContextMenu = (elements) =>
         menu = contextMenu
           x: $element.offset().left
