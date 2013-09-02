@@ -11,9 +11,8 @@ angular.module('angularMatcher.directives', [])
         e.stopPropagation()
         iElement.find(".last").focus()
 
-      scope.$watch "filters", (v, old) ->
+      scope.$watchCollection "filters", (v, old) ->
         return if v is undefined
         return if old is undefined
-        return if v.length is old.length
         $(".value:last-child", iElement).focus()
 ])
