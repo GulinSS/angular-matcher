@@ -36,5 +36,7 @@ angular.module('app.controllers', [])
   '$scope'
   ($scope) ->
 
+
+
 ])
 

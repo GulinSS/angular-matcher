@@ -10,23 +10,16 @@ angular.module('angularMatcher.controllers', [])
         $scope.filters.splice neededToDelete, 1
 
       filters: [
-        key:
-          name: "Body Type"
-          parent: null
-          child: "Manufacturer"
-
-        result:
-          text: "Body Type"
-
-          key:
-            resultFor: "Body Type"
-
-          value:
-            id: 1
-            text: "Sedan"
+        text: "Body Type"
+        value:
+          text: "Sedan"
+      ,
+        text: "Manufacturer"
+        value:
+          text: "Mazda"
       ]
 
-    # TODO: list of available filter fields
+      # TODO: list of available filter fields
       fields: [
 
       ]

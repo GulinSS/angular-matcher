@@ -6,8 +6,10 @@ angular.module("autoInput.directives", [])
     restrict: "E"
     scope:
       result: "="
-      key: "&"
       suggestions: "&"
+
+      #TODO: implement it as nullable
+      key: "&"
 
     #controller: it must solve such tasks:
     # 1. on taking result execute jump focus to next autoInput
