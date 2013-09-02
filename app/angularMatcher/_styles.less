@@ -42,11 +42,13 @@
   }
 
   .match {
+    @pad: 2px;
+
     display: inline-block;
     margin: 0;
+    margin-right: @pad;
     padding: 0;
-    padding-left: 2px;
-    background-color: #f7f7f7;
+    padding-left: @pad;
 
     .close, .comma {
       vertical-align: middle;
@@ -56,11 +58,20 @@
       font-size: inherit;
       line-height: inherit;
       float: none;
-      padding-right: 2px;
+      padding-right: @pad;
     }
 
     .value {
-      margin-left: 4px;
+      margin-left: @pad;
+      margin-right: 0;
+    }
+
+    &:after {
+      content: ";";
+    }
+
+    &:last-of-type:after {
+      content: "";
     }
   }
 }
